@@ -1,26 +1,60 @@
 import React from 'react';
 import Tone from 'tone';
+import i from 'icepick';
 
 import Keyboard from './Keyboard';
 
 const sampleNoteGroups = [
     [{ pitch: 'C4', duration: 1}],
-    [{ pitch: 'Eb4', duration: 1}],
+    [{ pitch: 'E4', duration: 1}],
     [{ pitch: 'A4', duration: 1}],
     // [{ pitch: 'F4', duration: 1}],
     [{ pitch: 'C5', duration: 1}],
 ];
 
-function pitchIndex(pitch, fromKey = 'C') {
-    const [_, pitchKey, octave] = pitch.match(/^(.*)(\d)$/);
+const pitches = [
+    'C',
+    'C#',
+    'D',
+    'D#',
+    'E',
+    'F',
+    'F#',
+    'G',
+    'G#',
+    'A',
+    'A#',
+    'B',
+];
 
-    const [pitchNote, pitchAccidental] = pitchKey;
-
-    let index = pitchNote.charCodeAt() - fromKey.charCodeAt();
-
-    if (pitchAccidental) {
-        index += pitchAccidental === 'b' ? -0.5 : 0.5;
+function getScale(fromPitch, type = 'MAJOR') {
+    const pitchIndex = pitches.indexOf(fromPitch);
+    switch (type) {
+        case 'MAJOR':
+        default:
+            return [0, 2, 4, 5, 7, 9, 11]
+                .map(i => pitches[(i + pitchIndex) % 12]);
     }
+}
+
+function pitchMeta(pitch) {
+    const [_, note, octave] = pitch.match(/^(.*)(\d)$/);
+
+    return {
+        note,
+        octave,
+    }
+}
+
+function pitchIndex(pitch, fromPitch = 'C4') {
+    const { note, octave } = pitchMeta(pitch);
+    const { note: fromNote, octave: fromOctave } = pitchMeta(fromPitch);
+
+    const scale = getScale(fromNote);
+
+    let index = scale.indexOf(note);
+
+    index += (octave - fromOctave) * 8;
 
     return index;
 }
@@ -35,7 +69,7 @@ class Score extends React.Component {
 
         this.state = {
             noteGroups: sampleNoteGroups,
-            playing: false,
+            playing: true,
             beat: 1,
         };
 
@@ -77,6 +111,36 @@ class Score extends React.Component {
         console.log(e);
     }
 
+    handlePlayNote(note) {
+        const {
+            currentTime,
+            currentBeat,
+            bpm,
+            bars,
+        } = this.props;
+
+        const duration = Math.round((note.end - note.start) / (1000 * 60 * 4 / (bpm * 16)));
+
+        console.log(note);
+
+        let beat = currentBeat - duration;
+        if (beat < 0) beat = bars * 16 - beat;
+
+        this.addNote({
+            beat,
+            pitch: note.pitch,
+            duration,
+        });
+    }
+
+    addNote(note) {
+        this.setState({
+            noteGroups: i.set(
+                this.state.noteGroups, note.beat,
+                i.push(this.state.noteGroups[note.beat] || [], note)),
+        });
+    }
+
     render() {
         const {
             bars,
@@ -86,6 +150,7 @@ class Score extends React.Component {
         } = this.state;
 
         const notes = noteGroups
+            .filter(a => a && a.length)
             .map((noteGroup, i) => noteGroup.map(note => ({
                 ...note,
                 beat: i,
@@ -109,10 +174,16 @@ class Score extends React.Component {
                         onClick={() => this.synth.triggerAttackRelease(note.pitch, '16n')}
                     />
                 ))}
-                <Keyboard />
+                {false &&
+                    <Keyboard onPlay={(note) => this.handlePlayNote(note)} />
+                }
             </div>
         );
     }
 }
+
+Score.defaultProps = {
+    bars: 1,
+};
 
 export default Score;
