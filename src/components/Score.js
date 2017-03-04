@@ -96,10 +96,14 @@ class Score extends React.Component {
     }
 
     addNote(note) {
+        // see if note exists
+        const updatedNoteGroup = (this.state.noteGroups[note.beat] || [])
+            .filter(_note => note.pitch !== _note.pitch);
+
         this.setState({
             noteGroups: i.set(
                 this.state.noteGroups, note.beat,
-                i.push(this.state.noteGroups[note.beat] || [], note)),
+                i.push(updatedNoteGroup || [], note)),
         }, () => this.updateNotes());
     }
 
