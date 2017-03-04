@@ -19,7 +19,7 @@ class App extends Component {
   componentDidMount() {
     setInterval(() => {
       this.setState({
-        currentBeat: (this.state.currentBeat + 1) % 8,
+        currentBeat: (this.state.currentBeat + 1) % 64,
         currentTime: Date.now(),
       });
     }, this.state.bpm)

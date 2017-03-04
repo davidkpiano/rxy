@@ -6,10 +6,15 @@ import Keyboard from './Keyboard';
 
 const sampleNoteGroups = [
     [{ pitch: 'C4', duration: 1}],
+    [{ pitch: 'D4', duration: 1}],
     [{ pitch: 'E4', duration: 1}],
+    [{ pitch: 'F4', duration: 1}],
+    [{ pitch: 'G4', duration: 1}],
     [{ pitch: 'A4', duration: 1}],
-    // [{ pitch: 'F4', duration: 1}],
+    [{ pitch: 'B4', duration: 1}],
     [{ pitch: 'C5', duration: 1}],
+    [{ pitch: 'D5', duration: 1}],
+    
 ];
 
 const pitches = [
@@ -42,7 +47,7 @@ function pitchMeta(pitch) {
 
     return {
         note,
-        octave,
+        octave: +octave,
     }
 }
 
@@ -54,7 +59,7 @@ function pitchIndex(pitch, fromPitch = 'C4') {
 
     let index = scale.indexOf(note);
 
-    index += (octave - fromOctave) * 8;
+    index += (octave - fromOctave) * 7;
 
     return index;
 }
@@ -89,13 +94,25 @@ class Score extends React.Component {
             this.attack();
         }
     }
+    addNode(node) {
+        if (!node) return;
+
+        this.node = node;
+
+        const rect = node.getBoundingClientRect();
+
+        this.cellSize = {
+            height: rect.height / 29,
+            width: rect.width / 32,
+        };
+    }
     attack() {
-        const { currentBeat, bpm } = this.props;
+        const { currentBeat, bpm, bars } = this.props;
         const { noteGroups, playing } = this.state;
 
         if (!playing) return;
 
-        const noteGroup = noteGroups[currentBeat];
+        const noteGroup = noteGroups[currentBeat % (bars * 16)];
 
         if (noteGroup && noteGroup.length) {
             const pitches = noteGroup.map(({ pitch }) => pitch);
@@ -106,9 +123,17 @@ class Score extends React.Component {
     }
 
     handleClickScore(e) {
-        e.persist();
+        const { keySignature } = this.props;
+        const { note, octave: fromOctave } = pitchMeta(keySignature);
+        const scale = getScale(note);
 
-        console.log(e);
+        const octave = Math.floor((e.clientY / this.cellSize.height) / 7) + fromOctave;
+
+        this.addNote({
+            beat: Math.floor(e.clientX / this.cellSize.width),
+            pitch: `${scale[Math.floor(e.clientY / this.cellSize.height) % 7]}${octave}`,
+            duration: 1,
+        });
     }
 
     handlePlayNote(note) {
@@ -121,9 +146,7 @@ class Score extends React.Component {
 
         const duration = Math.round((note.end - note.start) / (1000 * 60 * 4 / (bpm * 16)));
 
-        console.log(note);
-
-        let beat = currentBeat - duration;
+        let beat = (currentBeat - duration) % (bars * 16);
         if (beat < 0) beat = bars * 16 - beat;
 
         this.addNote({
@@ -134,6 +157,7 @@ class Score extends React.Component {
     }
 
     addNote(note) {
+        console.log(note);
         this.setState({
             noteGroups: i.set(
                 this.state.noteGroups, note.beat,
@@ -150,17 +174,21 @@ class Score extends React.Component {
         } = this.state;
 
         const notes = noteGroups
-            .filter(a => a && a.length)
-            .map((noteGroup, i) => noteGroup.map(note => ({
-                ...note,
-                beat: i,
-            })))
+            .map((noteGroup, i) => {
+                if (!noteGroup) return [];
+
+                return noteGroup.map(note => ({
+                    ...note,
+                    beat: i,
+                }));
+            })
             .reduce((a, b) => a.concat(b), []);
 
         return (
             <div
                 className="ui-score"
                 onClick={(e) => this.handleClickScore(e)}
+                ref={(node) => this.addNode(node)}
             >
                 {notes.map(note => (
                     <div
@@ -171,10 +199,18 @@ class Score extends React.Component {
                             top: `${pitchIndex(note.pitch) * 100 / 29}%`,
                             width: `${note.duration * 100 / 32}%`,
                         }}
-                        onClick={() => this.synth.triggerAttackRelease(note.pitch, '16n')}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            this.synth.triggerAttackRelease(note.pitch, '16n');
+                        }}
+                        onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }}
                     />
                 ))}
-                {false &&
+                {true &&
                     <Keyboard onPlay={(note) => this.handlePlayNote(note)} />
                 }
             </div>
@@ -184,6 +220,7 @@ class Score extends React.Component {
 
 Score.defaultProps = {
     bars: 1,
+    keySignature: 'C4',
 };
 
 export default Score;
