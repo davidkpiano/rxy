@@ -52,8 +52,8 @@ class Score extends React.Component {
         const rect = node.getBoundingClientRect();
 
         this.cellSize = {
-            height: rect.height / 29,
-            width: rect.width / 32,
+            height: rect.height / 15,
+            width: rect.width / 16,
         };
     }
 
@@ -128,33 +128,46 @@ class Score extends React.Component {
     }
 
     handleDragStart(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const touch = e.touches[0];
+
         this.setState({
-            x: e.clientX,
-            y: e.clientY,
+            x: touch.clientX,
+            y: touch.clientY,
         });
     }
 
     handleDragMove(e) {
+        e.preventDefault();
+        e.stopPropagation();
         if (!this.state.x) return;
 
+        const touch = e.touches[0];
+
         this.setState({
-            dx: e.clientX - this.state.x,
-            y: e.clientY,
+            dx: touch.clientX - this.state.x,
+            y: touch.clientY,
         });
     }
 
     handleDragEnd(e) {
+        e.preventDefault();
+        e.stopPropagation();
         if (!this.state.x) return;
 
-        const dx = Math.abs(this.state.x - e.clientX);
-        const x = Math.min(this.state.x, e.clientX);
+        const touch = e.touches[0];
 
+        // const dx = Math.abs(this.state.x - touch.clientX);
+        // const x = Math.min(this.state.x, touch.clientX);
+        const { x, y, dx } = this.state;
+
+        this.handleClickScore(x, y, dx);
         this.setState({
             x: null,
             y: null,
             dx: null,
-        })
-        this.handleClickScore(x, e.clientY, dx);
+        });
     }
 
     deleteNote(note) {
@@ -198,9 +211,9 @@ class Score extends React.Component {
         return (
             <div
                 className="ui-score"
-                onMouseDown={e => this.handleDragStart(e)}
-                onMouseMove={e => this.handleDragMove(e)}
-                onMouseUp={e => this.handleDragEnd(e)}             
+                onTouchStart={e => this.handleDragStart(e)}
+                onTouchMove={e => this.handleDragMove(e)}
+                onTouchEnd={e => this.handleDragEnd(e)}             
                 ref={(node) => this.addNode(node)}
             >
                 {notes && notes.map(note => (

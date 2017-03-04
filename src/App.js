@@ -28,7 +28,7 @@ class ScoreState {
   constructor(options = {}) {
     this.bars = 1;
     this.playing = true;
-    this.noteGroups = sampleNoteGroups;
+    this.noteGroups = [];
     this.synth = new Tone.PolySynth(6, Tone.Synth, {
       // "oscillator" : {
       // 	"partials" : [0, 2, 3, 4],
@@ -48,9 +48,13 @@ class App extends Component {
       currentTime: Date.now(),
       bpm: 120,
       scores: [
-        new ScoreState({ index: 0 }),
+        new ScoreState({
+          index: 0,
+          noteGroups: sampleNoteGroups,
+        }),
       ],
       score: null,
+      mode: 'EDIT',
     }
   }
   componentDidMount() {
@@ -69,6 +73,17 @@ class App extends Component {
     }
   }
   handleClickScore(index) {
+    const { mode } = this.state;
+
+    if (mode === 'PLAY' && this.state.scores[index]) {
+      this.setState({
+        scores: i.setIn(this.state.scores, [index, 'playing'], !this.state.scores[index].playing)
+      });
+    } else {
+      this.handleDoubleClickScore(index);
+    }
+  }
+  handleDoubleClickScore(index) {
     if (!this.state.scores[index]) {
       const newScore = new ScoreState({ index });
       this.setState({
@@ -77,14 +92,10 @@ class App extends Component {
       });
     } else {
       this.setState({
-        scores: i.setIn(this.state.scores, [index, 'playing'], !this.state.scores[index].playing)
+        scores: i.setIn(this.state.scores, [index, 'playing'], true),
+        score: this.state.scores[index],
       });
     }
-  }
-  handleDoubleClickScore(index) {
-    this.setState({
-      score: this.state.scores[index],
-    });
   }
   play() {
       const { currentBeat, bpm, bars, scores } = this.state;
@@ -141,7 +152,8 @@ class App extends Component {
         <Launchpad
           rows={8}
           onClick={(index) => this.handleClickScore(index)}
-          onDoubleClick={(index) => this.handleDoubleClickScore(index)}          
+          onDoubleClick={(index) => this.handleDoubleClickScore(index)}
+          scores={this.state.scores}
         />
       </div>
     );

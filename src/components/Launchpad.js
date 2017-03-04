@@ -1,4 +1,5 @@
 import React from 'react';
+import cn from 'classnames';
 
 class LaunchpadButton extends React.Component {
     constructor() {
@@ -14,14 +15,15 @@ class LaunchpadButton extends React.Component {
         }
     }
     render() {
-        const { onClick, onDoubleClick, style } = this.props;
+        const { onClick, style, score } = this.props;
 
         return (
             <div
-                className="ui-launchpad-button"
+                className={cn('ui-launchpad-button', {
+                    '-active': score && score.playing,
+                })}
                 style={style}
                 onClick={onClick}
-                onDoubleClick={onDoubleClick}
             />
         )
     }
@@ -29,7 +31,7 @@ class LaunchpadButton extends React.Component {
 
 class Launchpad extends React.Component {
     render() {
-        const { rows, onClick, onDoubleClick } = this.props;
+        const { rows, onClick, scores } = this.props;
 
         const width = 100 / rows;
 
@@ -37,6 +39,7 @@ class Launchpad extends React.Component {
             <div className="ui-launchpad">
             {Array(rows * rows).fill(null).map((_, i) =>
                 <LaunchpadButton
+                    score={scores[i]}
                     key={i}
                     style={{
                         width: `${width}%`,
@@ -45,7 +48,6 @@ class Launchpad extends React.Component {
                         left: `${width * Math.floor(i % rows)}%`,
                     }}
                     onClick={() => onClick(i)}
-                    onDoubleClick={() => onDoubleClick(i)}
                 />
             )}
             </div>

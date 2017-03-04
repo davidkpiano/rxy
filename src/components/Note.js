@@ -50,17 +50,21 @@ class Note extends React.Component {
                 className="ui-note"
                 key={pitch + beat}
                 style={{
-                    left: `${beat * 100 / 32}%`,
-                    top: `${pitchIndex(pitch) * 100 / 29}%`,
-                    width: `${duration * 100 / 32}%`,
+                    left: `${beat * 100 / 16}%`,
+                    top: `${pitchIndex(pitch) * 100 / 15}%`,
+                    width: `${duration * 100 / 16}%`,
                 }}
-                onClick={(e) => {
-                    console.log('yeah');
+                onTouchStart={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     onClick && onClick({ pitch, beat });
                 }}
-                onMouseDown={(e) => {
+                onTouchEnd={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onClick && onClick({ pitch, beat });
+                }}
+                onTouchmove={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                 }}
