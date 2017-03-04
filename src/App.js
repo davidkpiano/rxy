@@ -4,14 +4,7 @@ import './index.css';
 
 import Launchpad from './components/Launchpad';
 import Score from './components/Score';
-
-const sampleNoteGroups = [
-    [{ pitch: 'C4', duration: 1}],
-    [{ pitch: 'D4', duration: 1}, { pitch: 'F4', duration: 5}],
-    [{ pitch: 'E4', duration: 1}],
-    // [{ pitch: 'F4', duration: 1}],
-    [{ pitch: 'G4', duration: 1}],
-]
+import Keyboard from './components/Keyboard';
 
 class App extends Component {
   constructor() {
@@ -30,6 +23,7 @@ class App extends Component {
   render() {
     return (
       <div className="ui-app">
+        <Keyboard />
         <Score currentBeat={this.state.currentBeat} bpm={this.state.bpm} />
         <Launchpad rows={8} />
       </div>

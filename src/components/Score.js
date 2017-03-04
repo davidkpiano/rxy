@@ -3,11 +3,12 @@ import Tone from 'tone';
 
 const sampleNoteGroups = [
     [{ pitch: 'C4', duration: 1}],
-    [{ pitch: 'D4', duration: 1}, { pitch: 'F4', duration: 4}],
-    [{ pitch: 'E4', duration: 1}],
-    [{ pitch: 'F4', duration: 1}],
-    [{ pitch: 'G4', duration: 1}],
+    [{ pitch: 'Eb4', duration: 1}],
+    [{ pitch: 'A4', duration: 1}],
+    // [{ pitch: 'F4', duration: 1}],
+    [{ pitch: 'C5', duration: 1}],
 ]
+
 
 //create a synth and connect it to the master output (your speakers)
 // var synth = new Tone.Synth(6, Tone.Synth, {
@@ -20,9 +21,15 @@ const sampleNoteGroups = [
 // synth.triggerAttackRelease("C4", "8n");
 
 function pitchIndex(pitch, fromKey = 'C') {
-    const [pitchKey, octave] = pitch;
+    const [_, pitchKey, octave] = pitch.match(/^(.*)(\d)$/);
 
-    const index = pitchKey.charCodeAt() - fromKey.charCodeAt();
+    const [pitchNote, pitchAccidental] = pitchKey;
+
+    let index = pitchNote.charCodeAt() - fromKey.charCodeAt();
+
+    if (pitchAccidental) {
+        index += pitchAccidental === 'b' ? -0.5 : 0.5;
+    }
 
     return index;
 }

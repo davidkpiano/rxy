@@ -27,6 +27,49 @@ body, html {
   border: 1px solid blue;
   position: absolute; }
 
+.ui-keyboard {
+  width: 100%;
+  height: 50%; }
+  .ui-keyboard > .ui-key {
+    width: calc(100% / 8);
+    height: 100%;
+    position: absolute;
+    border: 1px solid blue; }
+    .ui-keyboard > .ui-key:nth-child(1) {
+      left: calc((100% / 8) * 0); }
+    .ui-keyboard > .ui-key:nth-child(2) {
+      left: calc((100% / 8) * 0.5);
+      height: 50%;
+      top: 0; }
+    .ui-keyboard > .ui-key:nth-child(3) {
+      left: calc((100% / 8) * 1); }
+    .ui-keyboard > .ui-key:nth-child(4) {
+      left: calc((100% / 8) * 1.5);
+      height: 50%;
+      top: 0; }
+    .ui-keyboard > .ui-key:nth-child(5) {
+      left: calc((100% / 8) * 2); }
+    .ui-keyboard > .ui-key:nth-child(6) {
+      left: calc((100% / 8) * 3); }
+    .ui-keyboard > .ui-key:nth-child(7) {
+      left: calc((100% / 8) * 3.5);
+      height: 50%;
+      top: 0; }
+    .ui-keyboard > .ui-key:nth-child(8) {
+      left: calc((100% / 8) * 4); }
+    .ui-keyboard > .ui-key:nth-child(9) {
+      left: calc((100% / 8) * 4.5);
+      height: 50%;
+      top: 0; }
+    .ui-keyboard > .ui-key:nth-child(10) {
+      left: calc((100% / 8) * 5); }
+    .ui-keyboard > .ui-key:nth-child(11) {
+      left: calc((100% / 8) * 5.5);
+      height: 50%;
+      top: 0; }
+    .ui-keyboard > .ui-key:nth-child(12) {
+      left: calc((100% / 8) * 6); }
+
 #root {
   height: 100%; }
 
