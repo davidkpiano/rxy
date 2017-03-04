@@ -25,7 +25,9 @@ class Key extends React.Component {
             end: null,
         }
     }
-    handleAttack() {
+    handleAttack(e) {
+        e.preventDefault();
+        e.stopPropagation();
         const { synth, pitch } = this.props;
 
         this.setState({
@@ -34,7 +36,9 @@ class Key extends React.Component {
 
         synth.triggerAttack(pitch);
     }
-    handleRelease() {
+    handleRelease(e) {
+        e.preventDefault();
+        e.stopPropagation();
         const { synth, pitch, onPlay } = this.props;
 
         synth.triggerRelease(pitch);
@@ -49,8 +53,8 @@ class Key extends React.Component {
         return (
             <div
                 className="ui-key"
-                onMouseDown={() => this.handleAttack()}
-                onMouseUp={() => this.handleRelease()}
+                onMouseDown={(e) => this.handleAttack(e)}
+                onMouseUp={(e) => this.handleRelease(e)}
             />
         );
     }

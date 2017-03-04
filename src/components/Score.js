@@ -3,6 +3,9 @@ import Tone from 'tone';
 import i from 'icepick';
 
 import Keyboard from './Keyboard';
+import Note from './Note';
+
+import { pitchIndex, pitchMeta, getScale } from '../utils/pitch';
 
 const sampleNoteGroups = [
     [{ pitch: 'C4', duration: 1}],
@@ -17,53 +20,6 @@ const sampleNoteGroups = [
     
 ];
 
-const pitches = [
-    'C',
-    'C#',
-    'D',
-    'D#',
-    'E',
-    'F',
-    'F#',
-    'G',
-    'G#',
-    'A',
-    'A#',
-    'B',
-];
-
-function getScale(fromPitch, type = 'MAJOR') {
-    const pitchIndex = pitches.indexOf(fromPitch);
-    switch (type) {
-        case 'MAJOR':
-        default:
-            return [0, 2, 4, 5, 7, 9, 11]
-                .map(i => pitches[(i + pitchIndex) % 12]);
-    }
-}
-
-function pitchMeta(pitch) {
-    const [_, note, octave] = pitch.match(/^(.*)(\d)$/);
-
-    return {
-        note,
-        octave: +octave,
-    }
-}
-
-function pitchIndex(pitch, fromPitch = 'C4') {
-    const { note, octave } = pitchMeta(pitch);
-    const { note: fromNote, octave: fromOctave } = pitchMeta(fromPitch);
-
-    const scale = getScale(fromNote);
-
-    let index = scale.indexOf(note);
-
-    index += (octave - fromOctave) * 7;
-
-    return index;
-}
-
 function getDuration(duration, bpm) {
     return 16 / bpm * duration;
 }
@@ -76,6 +32,8 @@ class Score extends React.Component {
             noteGroups: sampleNoteGroups,
             playing: true,
             beat: 1,
+            x: null,
+            y: null,
         };
 
         this.synth = new Tone.PolySynth(6, Tone.Synth, {
@@ -85,6 +43,7 @@ class Score extends React.Component {
 		}).toMaster();
     }
     componentDidMount() {
+        this.updateNotes();
         this.attack();
     }
     componentWillReceiveProps(nextProps) {
@@ -122,18 +81,22 @@ class Score extends React.Component {
         }
     }
 
-    handleClickScore(e) {
+    handleClickScore(x, y, dx = 0) {
+        this.addNote(this.getNote(x, y, dx));
+    }
+
+    getNote(x, y, dx) {
         const { keySignature } = this.props;
         const { note, octave: fromOctave } = pitchMeta(keySignature);
         const scale = getScale(note);
 
-        const octave = Math.floor((e.clientY / this.cellSize.height) / 7) + fromOctave;
+        const octave = Math.floor((y / this.cellSize.height) / 7) + fromOctave;
 
-        this.addNote({
-            beat: Math.floor(e.clientX / this.cellSize.width),
-            pitch: `${scale[Math.floor(e.clientY / this.cellSize.height) % 7]}${octave}`,
-            duration: 1,
-        });
+        return {
+            beat: Math.floor(x / this.cellSize.width),
+            pitch: `${scale[Math.floor(y / this.cellSize.height) % 7]}${octave}`,
+            duration: Math.max(1, Math.ceil(dx / this.cellSize.width)),
+        };
     }
 
     handlePlayNote(note) {
@@ -157,21 +120,15 @@ class Score extends React.Component {
     }
 
     addNote(note) {
-        console.log(note);
         this.setState({
             noteGroups: i.set(
                 this.state.noteGroups, note.beat,
                 i.push(this.state.noteGroups[note.beat] || [], note)),
-        });
+        }, () => this.updateNotes());
     }
 
-    render() {
-        const {
-            bars,
-        } = this.props;
-        const {
-            noteGroups,
-        } = this.state;
+    updateNotes() {
+        const { noteGroups } = this.state;
 
         const notes = noteGroups
             .map((noteGroup, i) => {
@@ -184,32 +141,94 @@ class Score extends React.Component {
             })
             .reduce((a, b) => a.concat(b), []);
 
+        this.setState({ notes });
+    }
+
+    handleDragStart(e) {
+        this.setState({
+            x: e.clientX,
+            y: e.clientY,
+        });
+    }
+
+    handleDragMove(e) {
+        if (!this.state.x) return;
+
+        this.setState({
+            dx: e.clientX - this.state.x,
+            y: e.clientY,
+        });
+    }
+
+    handleDragEnd(e) {
+        if (!this.state.x) return;
+
+        const dx = Math.abs(this.state.x - e.clientX);
+        const x = Math.min(this.state.x, e.clientX);
+
+        this.setState({
+            x: null,
+            y: null,
+            dx: null,
+        })
+        this.handleClickScore(x, e.clientY, dx);
+    }
+
+    deleteNote(note) {
+        const { noteGroups } = this.state;
+
+        console.log(noteGroups[note.beat], note)
+
+        this.setState({
+            noteGroups: i
+                .set(noteGroups, note.beat, noteGroups[note.beat]
+                .filter(_note => note.pitch !== _note.pitch)),
+        }, () => this.updateNotes());
+    }
+
+    renderTempNote() {
+        const { x, y, dx } = this.state;
+
+        if (!x) return null;
+
+        const note = this.getNote(x, y, dx);
+
+        return (
+            <Note
+                key={note.pitch + note.beat}
+                pitch={note.pitch}
+                beat={note.beat}
+                duration={note.duration}
+            />
+        );
+    }
+
+    render() {
+        const {
+            bars,
+        } = this.props;
+        const {
+            notes,
+        } = this.state;
+
         return (
             <div
                 className="ui-score"
-                onClick={(e) => this.handleClickScore(e)}
+                onMouseDown={e => this.handleDragStart(e)}
+                onMouseMove={e => this.handleDragMove(e)}
+                onMouseUp={e => this.handleDragEnd(e)}             
                 ref={(node) => this.addNode(node)}
             >
-                {notes.map(note => (
-                    <div
-                        className="ui-note"
+                {notes && notes.map(note => (
+                    <Note
                         key={note.pitch + note.beat}
-                        style={{
-                            left: `${note.beat * 100 / 32}%`,
-                            top: `${pitchIndex(note.pitch) * 100 / 29}%`,
-                            width: `${note.duration * 100 / 32}%`,
-                        }}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            this.synth.triggerAttackRelease(note.pitch, '16n');
-                        }}
-                        onMouseDown={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                        }}
+                        pitch={note.pitch}
+                        beat={note.beat}
+                        duration={note.duration}
+                        onClick={(note) => this.deleteNote(note)}
                     />
                 ))}
+                {this.renderTempNote()}
                 {true &&
                     <Keyboard onPlay={(note) => this.handlePlayNote(note)} />
                 }
