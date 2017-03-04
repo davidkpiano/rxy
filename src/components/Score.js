@@ -1,24 +1,15 @@
 import React from 'react';
 import Tone from 'tone';
 
+import Keyboard from './Keyboard';
+
 const sampleNoteGroups = [
     [{ pitch: 'C4', duration: 1}],
     [{ pitch: 'Eb4', duration: 1}],
     [{ pitch: 'A4', duration: 1}],
     // [{ pitch: 'F4', duration: 1}],
     [{ pitch: 'C5', duration: 1}],
-]
-
-
-//create a synth and connect it to the master output (your speakers)
-// var synth = new Tone.Synth(6, Tone.Synth, {
-// 			"oscillator" : {
-// 				"partials" : [0, 2, 3, 4],
-// 			}
-// 		}).toMaster();
-
-//play a middle 'C' for the duration of an 8th note
-// synth.triggerAttackRelease("C4", "8n");
+];
 
 function pitchIndex(pitch, fromKey = 'C') {
     const [_, pitchKey, octave] = pitch.match(/^(.*)(\d)$/);
@@ -44,7 +35,7 @@ class Score extends React.Component {
 
         this.state = {
             noteGroups: sampleNoteGroups,
-            playing: true,
+            playing: false,
             beat: 1,
         };
 
@@ -66,7 +57,9 @@ class Score extends React.Component {
     }
     attack() {
         const { currentBeat, bpm } = this.props;
-        const { noteGroups } = this.state;
+        const { noteGroups, playing } = this.state;
+
+        if (!playing) return;
 
         const noteGroup = noteGroups[currentBeat];
 
@@ -116,6 +109,7 @@ class Score extends React.Component {
                         onClick={() => this.synth.triggerAttackRelease(note.pitch, '16n')}
                     />
                 ))}
+                <Keyboard />
             </div>
         );
     }

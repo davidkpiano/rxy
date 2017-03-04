@@ -12,6 +12,7 @@ class App extends Component {
 
     this.state = {
       currentBeat: -1,
+      currentTime: Date.now(),
       bpm: 120,
     }
   }
@@ -23,8 +24,12 @@ class App extends Component {
   render() {
     return (
       <div className="ui-app">
-        <Keyboard />
-        <Score currentBeat={this.state.currentBeat} bpm={this.state.bpm} />
+        <Score
+          currentBeat={this.state.currentBeat}
+          currentTime={this.state.currentTime}
+          playing={true}
+          bpm={this.state.bpm}
+        />
         <Launchpad rows={8} />
       </div>
     );
