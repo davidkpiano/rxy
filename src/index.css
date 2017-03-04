@@ -1,5 +1,25 @@
-body {
+*, *:before, *:after {
+  box-sizing: border-box;
+  position: relative; }
+
+body, html {
+  height: 100%;
+  width: 100%;
+  max-height: 100%;
   margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
+  padding: 0; }
+
+.ui-launchpad {
+  height: 100vmin;
+  width: 100vmin;
+  outline: 1px solid blue; }
+
+.ui-launchpad-button {
+  position: absolute;
+  outline: 1px solid green; }
+
+#root {
+  height: 100%; }
+
+.ui-app {
+  height: 100%; }

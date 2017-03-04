@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "node-sass": "^4.5.0",
     "react-scripts": "0.9.3"
   },
   "dependencies": {
@@ -10,8 +11,10 @@
     "react-dom": "^15.4.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm run css:watch & react-scripts start",
+    "build": "npm run css:build && react-scripts build",
+    "css:watch": "node-sass src/scss/main.scss src/index.css -w",
+    "css:build": "node-sass src/scss/main.scss src/index.css",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
