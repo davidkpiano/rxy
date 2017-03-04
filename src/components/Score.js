@@ -3,7 +3,7 @@ import Tone from 'tone';
 
 const sampleNoteGroups = [
     [{ pitch: 'C4', duration: 1}],
-    [{ pitch: 'D4', duration: 1}, { pitch: 'F4', duration: 1}],
+    [{ pitch: 'D4', duration: 1}, { pitch: 'F4', duration: 4}],
     [{ pitch: 'E4', duration: 1}],
     [{ pitch: 'F4', duration: 1}],
     [{ pitch: 'G4', duration: 1}],
@@ -27,22 +27,25 @@ function pitchIndex(pitch, fromKey = 'C') {
     return index;
 }
 
+function getDuration(duration, bpm) {
+    return 16 / bpm * duration;
+}
+
 class Score extends React.Component {
     constructor() {
         super();
 
         this.state = {
+            noteGroups: sampleNoteGroups,
             playing: true,
             beat: 1,
         };
 
         this.synth = new Tone.PolySynth(6, Tone.Synth, {
-			"oscillator" : {
-				"partials" : [0, 2, 3, 4],
-			}
+			// "oscillator" : {
+			// 	"partials" : [0, 2, 3, 4],
+			// }
 		}).toMaster();
-
-        // this.synth.triggerAttackRelease(['C4','D4','F4'], 2)
     }
     componentDidMount() {
         this.attack();
@@ -55,41 +58,57 @@ class Score extends React.Component {
         }
     }
     attack() {
-        const { currentBeat, noteGroups } = this.props;
+        const { currentBeat, bpm } = this.props;
+        const { noteGroups } = this.state;
 
         const noteGroup = noteGroups[currentBeat];
 
         if (noteGroup && noteGroup.length) {
             const pitches = noteGroup.map(({ pitch }) => pitch);
-            const durations = noteGroup.map(({ duration }) => duration);
-
-            console.log(noteGroup);
+            const durations = noteGroup.map(({ duration }) => getDuration(duration, bpm));
 
             this.synth.triggerAttackRelease(pitches, durations);
         }
     }
+
+    handleClickScore(e) {
+        e.persist();
+
+        console.log(e);
+    }
+
     render() {
         const {
             bars,
-            noteGroups = sampleNoteGroups,
         } = this.props;
+        const {
+            noteGroups,
+        } = this.state;
 
-        const notes = noteGroups.reduce((a, b) => a.concat(b), []);
+        const notes = noteGroups
+            .map((noteGroup, i) => noteGroup.map(note => ({
+                ...note,
+                beat: i,
+            })))
+            .reduce((a, b) => a.concat(b), []);
 
         return (
-            <div className="ui-score">
-            {notes.map((note, i) => (
-                <div
-                    className="ui-note"
-                    key={i}
-                    style={{
-                        left: `${i * 100 / 32}%`,
-                        top: `${pitchIndex(note.pitch) * 100 / 29}%`,
-                        width: `${note.duration * 100 / 32}%`,
-                    }}
-                    onClick={() => this.synth.triggerAttackRelease(note.pitch, '16n')}
-                />
-            ))}
+            <div
+                className="ui-score"
+                onClick={(e) => this.handleClickScore(e)}
+            >
+                {notes.map(note => (
+                    <div
+                        className="ui-note"
+                        key={note.pitch + note.beat}
+                        style={{
+                            left: `${note.beat * 100 / 32}%`,
+                            top: `${pitchIndex(note.pitch) * 100 / 29}%`,
+                            width: `${note.duration * 100 / 32}%`,
+                        }}
+                        onClick={() => this.synth.triggerAttackRelease(note.pitch, '16n')}
+                    />
+                ))}
             </div>
         );
     }
