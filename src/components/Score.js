@@ -17,7 +17,6 @@ const sampleNoteGroups = [
     [{ pitch: 'B4', duration: 1}],
     [{ pitch: 'C5', duration: 1}],
     [{ pitch: 'D5', duration: 1}],
-    
 ];
 
 function getDuration(duration, bpm) {
@@ -25,11 +24,11 @@ function getDuration(duration, bpm) {
 }
 
 class Score extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            noteGroups: sampleNoteGroups,
+            noteGroups: props.noteGroups,
             playing: true,
             beat: 1,
             x: null,
@@ -44,14 +43,6 @@ class Score extends React.Component {
     }
     componentDidMount() {
         this.updateNotes();
-        this.attack();
-    }
-    componentWillReceiveProps(nextProps) {
-        const { currentBeat } = this.props;
-
-        if (currentBeat !== nextProps.currentBeat) {
-            this.attack();
-        }
     }
     addNode(node) {
         if (!node) return;
@@ -64,21 +55,6 @@ class Score extends React.Component {
             height: rect.height / 29,
             width: rect.width / 32,
         };
-    }
-    attack() {
-        const { currentBeat, bpm, bars } = this.props;
-        const { noteGroups, playing } = this.state;
-
-        if (!playing) return;
-
-        const noteGroup = noteGroups[currentBeat % (bars * 16)];
-
-        if (noteGroup && noteGroup.length) {
-            const pitches = noteGroup.map(({ pitch }) => pitch);
-            const durations = noteGroup.map(({ duration }) => getDuration(duration, bpm));
-
-            this.synth.triggerAttackRelease(pitches, durations);
-        }
     }
 
     handleClickScore(x, y, dx = 0) {
@@ -128,7 +104,10 @@ class Score extends React.Component {
     }
 
     updateNotes() {
+        const { onChange } = this.props;
         const { noteGroups } = this.state;
+
+        onChange(noteGroups);
 
         const notes = noteGroups
             .map((noteGroup, i) => {
@@ -206,6 +185,7 @@ class Score extends React.Component {
     render() {
         const {
             bars,
+            onClose,
         } = this.props;
         const {
             notes,
@@ -232,6 +212,7 @@ class Score extends React.Component {
                 {true &&
                     <Keyboard onPlay={(note) => this.handlePlayNote(note)} />
                 }
+                <div onClick={onClose}>Exit</div>
             </div>
         );
     }

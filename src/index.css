@@ -12,7 +12,11 @@ body, html {
 .ui-launchpad {
   height: 100vmin;
   width: 100vmin;
-  outline: 1px solid blue; }
+  outline: 1px solid blue;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff; }
 
 .ui-launchpad-button {
   position: absolute;
@@ -20,7 +24,12 @@ body, html {
 
 .ui-score {
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  z-index: 10; }
 
 .ui-note {
   height: 3.5%;
