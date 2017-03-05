@@ -6,16 +6,29 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #fff;
+    background-color: black;
 }
 
 .ui-launchpad-button {
     position: absolute;
-    outline: 1px solid green;
+    border: 1px solid #555;
+    border-radius: 2px;
+    transform: scale(0.95);
 
     &.-active {
         background-color: blue;
     }
+
+    &.-score {
+        border: 1px solid white;
+    }
+}
+
+.ui-aside {
+    width: calc(100vmax - 100vmin);
+    left: 100vmin;
+    height: 100%;
+    position: absolute;
 }
 
 $black-keys: 2 4 7 9 11;

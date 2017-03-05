@@ -1,0 +1,34 @@
+.ui-button {
+    appearance: none;
+    display: block;
+    background: transparent;
+    border: none;
+    pointer-events: auto;
+    color: white;
+    font-size: 3rem;
+    text-transform: uppercase;
+
+    &.-exit {
+        width: 3rem;
+        height: 3rem;
+        position: absolute;
+        right: 0;
+
+        &:before, &:after {
+            content: '';
+            width: 100%;
+            position: absolute;
+            height: 2px;
+            background-color: white;
+            top: calc(50% - 1px);
+            left: 0;
+            transform-origin: center center;
+        }
+        &:before {
+            transform: rotate(45deg);
+        }
+        &:after {
+            transform: rotate(-45deg);
+        }
+    }
+}

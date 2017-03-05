@@ -71,7 +71,6 @@ class Score extends React.Component {
 
         const octave = Math.floor(((height - y) / this.cellSize.height) / 7) + fromOctave;
 
-        console.log(this.rect);
         return {
             beat: Math.floor(x / this.cellSize.width),
             pitch: `${scale[Math.floor((height - y) / this.cellSize.height) % 7]}${octave}`,
@@ -145,6 +144,7 @@ class Score extends React.Component {
     handleDragMove(e) {
         e.preventDefault();
         e.stopPropagation();
+
         if (!this.state.x) return;
 
         const touch = e.touches[0];
@@ -158,6 +158,7 @@ class Score extends React.Component {
     handleDragEnd(e) {
         e.preventDefault();
         e.stopPropagation();
+        
         if (!this.state.x) return;
 
         const touch = e.touches[0];
@@ -230,6 +231,9 @@ class Score extends React.Component {
                 onTouchEnd={e => this.handleDragEnd(e)}             
                 ref={(node) => this.addNode(node)}
             >
+                <header className="ui-header">
+                    <button onTouchEnd={onClose} className="ui-button -exit" />
+                </header>
                 {notes && notes.map(note => (
                     <Note
                         key={note.pitch + note.beat}
@@ -243,7 +247,6 @@ class Score extends React.Component {
                 {false &&
                     <Keyboard onPlay={(note) => this.handlePlayNote(note)} />
                 }
-                <div onClick={onClose}>Exit</div>
             </div>
         );
     }

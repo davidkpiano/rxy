@@ -63,8 +63,6 @@ class Note extends React.Component {
         const dx = x - lastX;
         const dy = y - lastY;
 
-        console.log({dx, dy});
-
         if (Math.abs(dx) < 50 && Math.abs(dy) < 50) {
             onMove && onMove(false)
         } else {
@@ -94,6 +92,8 @@ class Note extends React.Component {
             x, lastX,
             y, lastY,
         } = this.state;
+
+        console.log(x, y);
 
         return (
             <div

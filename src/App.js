@@ -79,11 +79,11 @@ class App extends Component {
       this.setState({
         scores: i.setIn(this.state.scores, [index, 'playing'], !this.state.scores[index].playing)
       });
-    } else {
-      this.handleDoubleClickScore(index);
+    } else if (mode === 'EDIT') {
+      this.editScore(index);
     }
   }
-  handleDoubleClickScore(index) {
+  editScore(index) {
     if (!this.state.scores[index]) {
       const newScore = new ScoreState({ index });
       this.setState({
@@ -127,6 +127,11 @@ class App extends Component {
       score: null,
     });
   }
+  switchMode() {
+    this.setState({
+      mode: this.state.mode === 'EDIT' ? 'PLAY' : 'EDIT',
+    });
+  }
   renderScore() {
     const { score } = this.state;
 
@@ -146,6 +151,8 @@ class App extends Component {
     );
   }
   render() {
+    const { mode } = this.state;
+
     return (
       <div className="ui-app">
         {this.renderScore()}
@@ -155,6 +162,14 @@ class App extends Component {
           onDoubleClick={(index) => this.handleDoubleClickScore(index)}
           scores={this.state.scores}
         />
+        <aside className="ui-aside">
+          <button
+            className="ui-button"
+            onClick={() => this.switchMode()}
+          >
+            {mode === 'EDIT' ? 'PLAY' : 'EDIT'}
+          </button>
+        </aside>
       </div>
     );
   }

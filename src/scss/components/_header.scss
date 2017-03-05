@@ -1,0 +1,10 @@
+.ui-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: $cell-height;
+    background-color: black;
+    z-index: 2;
+    pointer-events: none;
+}

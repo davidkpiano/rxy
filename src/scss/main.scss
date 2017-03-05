@@ -9,10 +9,13 @@ body, html {
     max-height: 100%;
     margin: 0;
     padding: 0;
+    background: black;
 }
 
 @import 'components/launchpad';
 @import 'components/score';
+@import 'components/header';
+@import 'components/button';
 
 #root {
     height: 100%;

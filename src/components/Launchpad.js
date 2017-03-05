@@ -21,6 +21,7 @@ class LaunchpadButton extends React.Component {
             <div
                 className={cn('ui-launchpad-button', {
                     '-active': score && score.playing,
+                    '-score': score,
                 })}
                 style={style}
                 onClick={onClick}
