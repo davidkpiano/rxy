@@ -105,6 +105,18 @@ class App extends Component {
       }
     }
   }
+  save() {
+    fetch('http://localhost:8000/song', {
+      method: 'post',
+      body: JSON.stringify({
+        name: this.state.name,
+        data: {
+          bpm: this.state.bpm,
+          scores: this.state.scores.map(score => score.noteGroups),
+        }
+      }),
+    }).then(() => alert('Saved!'));
+  }
   play() {
       const { currentBeat, bpm, bars, scores } = this.state;
 
@@ -168,8 +180,6 @@ class App extends Component {
     const score = this.state.scores[this.state.selected];
     const synth = score.synth;
 
-    console.log(synth.get('detune'));
-
     return synth.get(attr)[attr];
   }
   render() {
@@ -216,6 +226,10 @@ class App extends Component {
           <button className="ui-button -icon" onClick={() => this.setSynth('oscillator', {type: 'sine'})}>
             ~
           </button>
+
+          <footer className="ui-footer">
+            <button className="ui-button" onClick={() => this.save()}>Save</button>
+          </footer>
         </aside>
       </div>
     );
