@@ -55,23 +55,27 @@ class Score extends React.Component {
             height: rect.height / 15,
             width: rect.width / 16,
         };
+        this.rect = rect;
     }
 
     handleClickScore(x, y, dx = 0) {
         this.addNote(this.getNote(x, y, dx));
     }
 
-    getNote(x, y, dx) {
+    getNote(x, y, dx, duration) {
         const { keySignature } = this.props;
         const { note, octave: fromOctave } = pitchMeta(keySignature);
         const scale = getScale(note);
 
-        const octave = Math.floor((y / this.cellSize.height) / 7) + fromOctave;
+        const { height } = this.rect;
 
+        const octave = Math.floor(((height - y) / this.cellSize.height) / 7) + fromOctave;
+
+        console.log(this.rect);
         return {
             beat: Math.floor(x / this.cellSize.width),
-            pitch: `${scale[Math.floor(y / this.cellSize.height) % 7]}${octave}`,
-            duration: Math.max(1, Math.ceil(dx / this.cellSize.width)),
+            pitch: `${scale[Math.floor((height - y) / this.cellSize.height) % 7]}${octave}`,
+            duration: duration || Math.max(1, Math.ceil(dx / this.cellSize.width)),
         };
     }
 
@@ -170,16 +174,25 @@ class Score extends React.Component {
         });
     }
 
-    deleteNote(note) {
-        const { noteGroups } = this.state;
+    moveNote(note, pos) {
+        console.log(note);
+        const newNote = this.getNote(pos.x, pos.y, undefined, note.duration);
 
-        console.log(noteGroups[note.beat], note)
+        const { noteGroups } = this.state;
 
         this.setState({
             noteGroups: i
                 .set(noteGroups, note.beat, noteGroups[note.beat]
                 .filter(_note => note.pitch !== _note.pitch)),
-        }, () => this.updateNotes());
+        }, () => {
+            this.updateNotes();    
+            // If the note was moved
+            if (pos) {
+                console.log(newNote);
+                this.addNote(newNote);
+            }
+        });
+
     }
 
     renderTempNote() {
@@ -191,6 +204,7 @@ class Score extends React.Component {
 
         return (
             <Note
+                temporary
                 key={note.pitch + note.beat}
                 pitch={note.pitch}
                 beat={note.beat}
@@ -222,11 +236,11 @@ class Score extends React.Component {
                         pitch={note.pitch}
                         beat={note.beat}
                         duration={note.duration}
-                        onClick={(note) => this.deleteNote(note)}
+                        onMove={(pos) => this.moveNote(note, pos)}
                     />
                 ))}
                 {this.renderTempNote()}
-                {true &&
+                {false &&
                     <Keyboard onPlay={(note) => this.handlePlayNote(note)} />
                 }
                 <div onClick={onClose}>Exit</div>

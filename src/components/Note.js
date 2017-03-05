@@ -1,40 +1,88 @@
 import React from 'react';
+import cn from 'classnames';
 
 import { pitchIndex } from '../utils/pitch';
 
 class Note extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             x: 0,
             y: 0,
-            dx: 0,
-            dy: 0,
+            lastX: 0,
+            lastY: 0,
             editing: false,
             augmenting: false,
             moving: false,
+            pitch: props.pitch,
+            beat: props.beat,
+            duration: props.duration,
         }
-    }
-    handleDragStart(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        console.log(e.clientX);
-
-        this.setState({
-            editing: true,
-            augmenting: e
-        })
     }
     addNode(node) {
         if (!node) return;
 
         this.node = node;
-        
-        const rect = node.getBoundingClientRect();
+    }
+    handleDragStart(e) {
+        e.preventDefault();
+        e.stopPropagation();
 
-        this.rect = rect;
+        const touch = e.touches[0];
+
+        this.setState({
+            x: touch.clientX,
+            y: touch.clientY,
+            lastX: touch.clientX,
+            lastY: touch.clientY,
+        });
+    }
+    handleDragMove(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const touch = e.touches[0];
+
+        const { x, y } = this.state;
+
+        this.setState({
+            lastX: touch.clientX,
+            lastY: touch.clientY,
+        });
+    }
+    handleDragEnd(e) {
+        const { onClick, onMove } = this.props;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const rect = this.node.getBoundingClientRect();
+        const { x, y, lastX, lastY } = this.state;
+
+        const dx = x - lastX;
+        const dy = y - lastY;
+
+        console.log({dx, dy});
+
+        if (Math.abs(dx) < 50 && Math.abs(dy) < 50) {
+            onMove && onMove(false)
+        } else {
+            const pos = {
+                x: lastX,
+                y: lastY,
+            };
+
+            onMove && onMove(pos);
+        }
+
+
+        this.setState({
+            x: 0,
+            y: 0,
+            lastX: 0,
+            lastY: 0,
+        });
     }
     render() {
         const {
@@ -42,31 +90,33 @@ class Note extends React.Component {
             beat,
             duration,
             onClick,
-        } = this.props;
+            temporary,
+            x, lastX,
+            y, lastY,
+        } = this.state;
 
         return (
             <div
                 ref={node => this.addNode(node)}
-                className="ui-note"
+                className={cn('ui-note', temporary && '-temporary')}
                 key={pitch + beat}
                 style={{
                     left: `${beat * 100 / 16}%`,
-                    top: `${pitchIndex(pitch) * 100 / 15}%`,
+                    bottom: `${pitchIndex(pitch) * 100 / 15}%`,
                     width: `${duration * 100 / 16}%`,
+                    transform: `translate(${lastX - x}px, ${lastY - y}px)`,
                 }}
                 onTouchStart={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onClick && onClick({ pitch, beat });
+                    this.handleDragStart(e);
                 }}
                 onTouchEnd={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onClick && onClick({ pitch, beat });
+
+                    this.handleDragEnd(e);
                 }}
-                onTouchmove={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                onTouchMove={(e) => {
+                    this.handleDragMove(e);                    
                 }}
             />
         );

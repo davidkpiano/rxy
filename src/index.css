@@ -24,13 +24,6 @@ body, html {
   .ui-launchpad-button.-active {
     background-color: blue; }
 
-.ui-note {
-  height: 3.5%;
-  background: #7EF58D;
-  border: 1px solid black;
-  border-radius: 2px;
-  position: absolute; }
-
 .ui-keyboard {
   width: 100%;
   height: 50%;
@@ -106,7 +99,10 @@ body, html {
   background: #7EF58D;
   border: 1px solid black;
   border-radius: 2px;
-  position: absolute; }
+  position: absolute;
+  transition: opacity 0.3s ease; }
+  .ui-note.-temporary {
+    opacity: 0.5; }
 
 #root {
   height: 100%; }
