@@ -112,10 +112,25 @@ class App extends Component {
         name: this.state.name,
         data: {
           bpm: this.state.bpm,
-          scores: this.state.scores.map(score => score.noteGroups),
+          scores: this.state.scores
+            .filter(a => a)
+            .map(score => score.noteGroups),
         }
       }),
     }).then(() => alert('Saved!'));
+  }
+  load(id) {
+    fetch(`http://localhost:8000/song/${id}`)
+      .then(r => r.json())
+      .then(res => {
+        const scores = JSON.parse(res[0].data).scores.map(noteGroups => {
+          return new ScoreState({ noteGroups })
+        });
+
+        console.log(scores);
+
+        this.setState({ scores, selected: 0 });
+      });
   }
   play() {
       const { currentBeat, bpm, bars, scores } = this.state;
@@ -228,6 +243,7 @@ class App extends Component {
           </button>
 
           <footer className="ui-footer">
+            <input type="text" onBlur={e => this.load(e.target.value)}/>
             <button className="ui-button" onClick={() => this.save()}>Save</button>
           </footer>
         </aside>
