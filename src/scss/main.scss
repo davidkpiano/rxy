@@ -10,6 +10,8 @@ body, html {
     margin: 0;
     padding: 0;
     background: black;
+    overflow: hidden;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 @import 'components/launchpad';
@@ -22,4 +24,17 @@ body, html {
 }
 .ui-app {
     height: 100%;
+}
+
+.input-range {
+    margin: 3rem 0;
+}
+
+.ui-aside {
+    width: calc(100vmax - 100vmin);
+    left: 100vmin;
+    height: 100%;
+    position: absolute;
+    padding: 1rem;
+    color: white;
 }

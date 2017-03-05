@@ -5,14 +5,14 @@
     border: none;
     pointer-events: auto;
     color: white;
-    font-size: 3rem;
+    font-size: 2rem;
     text-transform: uppercase;
+    padding: 1rem;
 
     &.-exit {
         width: 3rem;
         height: 3rem;
-        position: absolute;
-        right: 0;
+        margin-left: 2rem;
 
         &:before, &:after {
             content: '';
@@ -30,5 +30,10 @@
         &:after {
             transform: rotate(-45deg);
         }
+    }
+
+    &.-icon {
+        width: 5rem;
+        height: 5rem;
     }
 }

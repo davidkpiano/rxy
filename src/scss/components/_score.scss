@@ -29,6 +29,13 @@ $cell-height: (100 / $range) * 1vh;
         }
         box-shadow: $shadows;
     }
+
+    > .ui-aside {
+        background-color: black;
+        height: 100%;
+        position: absolute;
+        z-index: 3;
+    }
 }
 
 .ui-note {
@@ -37,8 +44,6 @@ $cell-height: (100 / $range) * 1vh;
     border: 1px solid black;
     border-radius: 2px;
     position: absolute;
-    transition: opacity 0.3s ease;
-    
 
     &.-temporary {
         opacity: 0.5;

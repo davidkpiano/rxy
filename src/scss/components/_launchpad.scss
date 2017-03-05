@@ -15,20 +15,17 @@
     border-radius: 2px;
     transform: scale(0.95);
 
-    &.-active {
-        background-color: blue;
-    }
-
     &.-score {
         border: 1px solid white;
     }
-}
+    &.-selected {
+        border-color: gold;
+        border-width: 2px;
+    }
 
-.ui-aside {
-    width: calc(100vmax - 100vmin);
-    left: 100vmin;
-    height: 100%;
-    position: absolute;
+    &.-active {
+        background-color: blue;
+    }
 }
 
 $black-keys: 2 4 7 9 11;

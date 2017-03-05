@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './index.css';
 import i from 'icepick';
 import Tone from 'tone';
+import Range from 'react-input-range';
+import 'react-input-range/lib/css/index.css';
 
 import Launchpad from './components/Launchpad';
 import Score from './components/Score';
@@ -54,6 +56,7 @@ class App extends Component {
         }),
       ],
       score: null,
+      selected: 0,
       mode: 'EDIT',
     }
   }
@@ -73,28 +76,33 @@ class App extends Component {
     }
   }
   handleClickScore(index) {
-    const { mode } = this.state;
+    const { mode, score } = this.state;
 
     if (mode === 'PLAY' && this.state.scores[index]) {
       this.setState({
         scores: i.setIn(this.state.scores, [index, 'playing'], !this.state.scores[index].playing)
       });
     } else if (mode === 'EDIT') {
-      this.editScore(index);
+      this.selectEditScore(index);
     }
   }
-  editScore(index) {
-    if (!this.state.scores[index]) {
+  selectEditScore(index) {
+    const score = this.state.scores[index];
+    if (!score) {
       const newScore = new ScoreState({ index });
       this.setState({
         scores: i.set(this.state.scores, index, newScore),
         score: newScore,
       });
     } else {
-      this.setState({
-        scores: i.setIn(this.state.scores, [index, 'playing'], true),
-        score: this.state.scores[index],
-      });
+      if (this.state.selected !== index) {
+        this.setState({ selected: index });
+      } else {
+        this.setState({
+          scores: i.setIn(this.state.scores, [index, 'playing'], true),
+          score: score,
+        });
+      }
     }
   }
   play() {
@@ -150,6 +158,20 @@ class App extends Component {
       />
     );
   }
+  setSynth(attr, val) {
+    const score = this.state.scores[this.state.selected];
+    const synth = score.synth;
+
+    synth.set(attr, val);
+  }
+  getSynth(attr) {
+    const score = this.state.scores[this.state.selected];
+    const synth = score.synth;
+
+    console.log(synth.get('detune'));
+
+    return synth.get(attr)[attr];
+  }
   render() {
     const { mode } = this.state;
 
@@ -161,6 +183,7 @@ class App extends Component {
           onClick={(index) => this.handleClickScore(index)}
           onDoubleClick={(index) => this.handleDoubleClickScore(index)}
           scores={this.state.scores}
+          selected={this.state.selected}
         />
         <aside className="ui-aside">
           <button
@@ -168,6 +191,30 @@ class App extends Component {
             onClick={() => this.switchMode()}
           >
             {mode === 'EDIT' ? 'PLAY' : 'EDIT'}
+          </button>
+          <label className="ui-label">Detune</label>
+          <Range
+            type="range"
+            minValue={-1200}
+            maxValue={1200}
+            step={100}
+            onChange={value => this.setSynth('detune', value)}
+            value={this.getSynth('detune')}
+          />
+          <label className="ui-label">Volume</label>          
+          <Range
+            type="range"
+            minValue={-10}
+            maxValue={10}
+            step={1}
+            onChange={value => this.setSynth('volume', value)}
+            value={this.getSynth('volume')}
+          />
+          <button className="ui-button -icon" onClick={() => this.setSynth('oscillator', {type: 'triangle'})}>
+            △
+          </button>
+          <button className="ui-button -icon" onClick={() => this.setSynth('oscillator', {type: 'sine'})}>
+            ~
           </button>
         </aside>
       </div>

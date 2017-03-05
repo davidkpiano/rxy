@@ -8,7 +8,9 @@ body, html {
   max-height: 100%;
   margin: 0;
   padding: 0;
-  background: black; }
+  background: black;
+  overflow: hidden;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; }
 
 .ui-launchpad {
   height: 100vmin;
@@ -24,16 +26,13 @@ body, html {
   border: 1px solid #555;
   border-radius: 2px;
   transform: scale(0.95); }
-  .ui-launchpad-button.-active {
-    background-color: blue; }
   .ui-launchpad-button.-score {
     border: 1px solid white; }
-
-.ui-aside {
-  width: calc(100vmax - 100vmin);
-  left: 100vmin;
-  height: 100%;
-  position: absolute; }
+  .ui-launchpad-button.-selected {
+    border-color: gold;
+    border-width: 2px; }
+  .ui-launchpad-button.-active {
+    background-color: blue; }
 
 .ui-keyboard {
   width: 100%;
@@ -104,14 +103,18 @@ body, html {
     bottom: calc(100% + 1px);
     right: calc(100% + 1px);
     box-shadow: 6.25vw 6.66667vh 0 #333, 6.25vw 13.33333vh 0 #333, 6.25vw 20vh 0 #333, 6.25vw 26.66667vh 0 #333, 6.25vw 33.33333vh 0 #333, 6.25vw 40vh 0 #333, 6.25vw 46.66667vh 0 #333, 6.25vw 53.33333vh 0 #333, 6.25vw 60vh 0 #333, 6.25vw 66.66667vh 0 #333, 6.25vw 73.33333vh 0 #333, 6.25vw 80vh 0 #333, 6.25vw 86.66667vh 0 #333, 6.25vw 93.33333vh 0 #333, 6.25vw 100vh 0 #333, 12.5vw 6.66667vh 0 #333, 12.5vw 13.33333vh 0 #333, 12.5vw 20vh 0 #333, 12.5vw 26.66667vh 0 #333, 12.5vw 33.33333vh 0 #333, 12.5vw 40vh 0 #333, 12.5vw 46.66667vh 0 #333, 12.5vw 53.33333vh 0 #333, 12.5vw 60vh 0 #333, 12.5vw 66.66667vh 0 #333, 12.5vw 73.33333vh 0 #333, 12.5vw 80vh 0 #333, 12.5vw 86.66667vh 0 #333, 12.5vw 93.33333vh 0 #333, 12.5vw 100vh 0 #333, 18.75vw 6.66667vh 0 #333, 18.75vw 13.33333vh 0 #333, 18.75vw 20vh 0 #333, 18.75vw 26.66667vh 0 #333, 18.75vw 33.33333vh 0 #333, 18.75vw 40vh 0 #333, 18.75vw 46.66667vh 0 #333, 18.75vw 53.33333vh 0 #333, 18.75vw 60vh 0 #333, 18.75vw 66.66667vh 0 #333, 18.75vw 73.33333vh 0 #333, 18.75vw 80vh 0 #333, 18.75vw 86.66667vh 0 #333, 18.75vw 93.33333vh 0 #333, 18.75vw 100vh 0 #333, 25vw 6.66667vh 0 #333, 25vw 13.33333vh 0 #333, 25vw 20vh 0 #333, 25vw 26.66667vh 0 #333, 25vw 33.33333vh 0 #333, 25vw 40vh 0 #333, 25vw 46.66667vh 0 #333, 25vw 53.33333vh 0 #333, 25vw 60vh 0 #333, 25vw 66.66667vh 0 #333, 25vw 73.33333vh 0 #333, 25vw 80vh 0 #333, 25vw 86.66667vh 0 #333, 25vw 93.33333vh 0 #333, 25vw 100vh 0 #333, 31.25vw 6.66667vh 0 #333, 31.25vw 13.33333vh 0 #333, 31.25vw 20vh 0 #333, 31.25vw 26.66667vh 0 #333, 31.25vw 33.33333vh 0 #333, 31.25vw 40vh 0 #333, 31.25vw 46.66667vh 0 #333, 31.25vw 53.33333vh 0 #333, 31.25vw 60vh 0 #333, 31.25vw 66.66667vh 0 #333, 31.25vw 73.33333vh 0 #333, 31.25vw 80vh 0 #333, 31.25vw 86.66667vh 0 #333, 31.25vw 93.33333vh 0 #333, 31.25vw 100vh 0 #333, 37.5vw 6.66667vh 0 #333, 37.5vw 13.33333vh 0 #333, 37.5vw 20vh 0 #333, 37.5vw 26.66667vh 0 #333, 37.5vw 33.33333vh 0 #333, 37.5vw 40vh 0 #333, 37.5vw 46.66667vh 0 #333, 37.5vw 53.33333vh 0 #333, 37.5vw 60vh 0 #333, 37.5vw 66.66667vh 0 #333, 37.5vw 73.33333vh 0 #333, 37.5vw 80vh 0 #333, 37.5vw 86.66667vh 0 #333, 37.5vw 93.33333vh 0 #333, 37.5vw 100vh 0 #333, 43.75vw 6.66667vh 0 #333, 43.75vw 13.33333vh 0 #333, 43.75vw 20vh 0 #333, 43.75vw 26.66667vh 0 #333, 43.75vw 33.33333vh 0 #333, 43.75vw 40vh 0 #333, 43.75vw 46.66667vh 0 #333, 43.75vw 53.33333vh 0 #333, 43.75vw 60vh 0 #333, 43.75vw 66.66667vh 0 #333, 43.75vw 73.33333vh 0 #333, 43.75vw 80vh 0 #333, 43.75vw 86.66667vh 0 #333, 43.75vw 93.33333vh 0 #333, 43.75vw 100vh 0 #333, 50vw 6.66667vh 0 #333, 50vw 13.33333vh 0 #333, 50vw 20vh 0 #333, 50vw 26.66667vh 0 #333, 50vw 33.33333vh 0 #333, 50vw 40vh 0 #333, 50vw 46.66667vh 0 #333, 50vw 53.33333vh 0 #333, 50vw 60vh 0 #333, 50vw 66.66667vh 0 #333, 50vw 73.33333vh 0 #333, 50vw 80vh 0 #333, 50vw 86.66667vh 0 #333, 50vw 93.33333vh 0 #333, 50vw 100vh 0 #333, 56.25vw 6.66667vh 0 #333, 56.25vw 13.33333vh 0 #333, 56.25vw 20vh 0 #333, 56.25vw 26.66667vh 0 #333, 56.25vw 33.33333vh 0 #333, 56.25vw 40vh 0 #333, 56.25vw 46.66667vh 0 #333, 56.25vw 53.33333vh 0 #333, 56.25vw 60vh 0 #333, 56.25vw 66.66667vh 0 #333, 56.25vw 73.33333vh 0 #333, 56.25vw 80vh 0 #333, 56.25vw 86.66667vh 0 #333, 56.25vw 93.33333vh 0 #333, 56.25vw 100vh 0 #333, 62.5vw 6.66667vh 0 #333, 62.5vw 13.33333vh 0 #333, 62.5vw 20vh 0 #333, 62.5vw 26.66667vh 0 #333, 62.5vw 33.33333vh 0 #333, 62.5vw 40vh 0 #333, 62.5vw 46.66667vh 0 #333, 62.5vw 53.33333vh 0 #333, 62.5vw 60vh 0 #333, 62.5vw 66.66667vh 0 #333, 62.5vw 73.33333vh 0 #333, 62.5vw 80vh 0 #333, 62.5vw 86.66667vh 0 #333, 62.5vw 93.33333vh 0 #333, 62.5vw 100vh 0 #333, 68.75vw 6.66667vh 0 #333, 68.75vw 13.33333vh 0 #333, 68.75vw 20vh 0 #333, 68.75vw 26.66667vh 0 #333, 68.75vw 33.33333vh 0 #333, 68.75vw 40vh 0 #333, 68.75vw 46.66667vh 0 #333, 68.75vw 53.33333vh 0 #333, 68.75vw 60vh 0 #333, 68.75vw 66.66667vh 0 #333, 68.75vw 73.33333vh 0 #333, 68.75vw 80vh 0 #333, 68.75vw 86.66667vh 0 #333, 68.75vw 93.33333vh 0 #333, 68.75vw 100vh 0 #333, 75vw 6.66667vh 0 #333, 75vw 13.33333vh 0 #333, 75vw 20vh 0 #333, 75vw 26.66667vh 0 #333, 75vw 33.33333vh 0 #333, 75vw 40vh 0 #333, 75vw 46.66667vh 0 #333, 75vw 53.33333vh 0 #333, 75vw 60vh 0 #333, 75vw 66.66667vh 0 #333, 75vw 73.33333vh 0 #333, 75vw 80vh 0 #333, 75vw 86.66667vh 0 #333, 75vw 93.33333vh 0 #333, 75vw 100vh 0 #333, 81.25vw 6.66667vh 0 #333, 81.25vw 13.33333vh 0 #333, 81.25vw 20vh 0 #333, 81.25vw 26.66667vh 0 #333, 81.25vw 33.33333vh 0 #333, 81.25vw 40vh 0 #333, 81.25vw 46.66667vh 0 #333, 81.25vw 53.33333vh 0 #333, 81.25vw 60vh 0 #333, 81.25vw 66.66667vh 0 #333, 81.25vw 73.33333vh 0 #333, 81.25vw 80vh 0 #333, 81.25vw 86.66667vh 0 #333, 81.25vw 93.33333vh 0 #333, 81.25vw 100vh 0 #333, 87.5vw 6.66667vh 0 #333, 87.5vw 13.33333vh 0 #333, 87.5vw 20vh 0 #333, 87.5vw 26.66667vh 0 #333, 87.5vw 33.33333vh 0 #333, 87.5vw 40vh 0 #333, 87.5vw 46.66667vh 0 #333, 87.5vw 53.33333vh 0 #333, 87.5vw 60vh 0 #333, 87.5vw 66.66667vh 0 #333, 87.5vw 73.33333vh 0 #333, 87.5vw 80vh 0 #333, 87.5vw 86.66667vh 0 #333, 87.5vw 93.33333vh 0 #333, 87.5vw 100vh 0 #333, 93.75vw 6.66667vh 0 #333, 93.75vw 13.33333vh 0 #333, 93.75vw 20vh 0 #333, 93.75vw 26.66667vh 0 #333, 93.75vw 33.33333vh 0 #333, 93.75vw 40vh 0 #333, 93.75vw 46.66667vh 0 #333, 93.75vw 53.33333vh 0 #333, 93.75vw 60vh 0 #333, 93.75vw 66.66667vh 0 #333, 93.75vw 73.33333vh 0 #333, 93.75vw 80vh 0 #333, 93.75vw 86.66667vh 0 #333, 93.75vw 93.33333vh 0 #333, 93.75vw 100vh 0 #333, 100vw 6.66667vh 0 #333, 100vw 13.33333vh 0 #333, 100vw 20vh 0 #333, 100vw 26.66667vh 0 #333, 100vw 33.33333vh 0 #333, 100vw 40vh 0 #333, 100vw 46.66667vh 0 #333, 100vw 53.33333vh 0 #333, 100vw 60vh 0 #333, 100vw 66.66667vh 0 #333, 100vw 73.33333vh 0 #333, 100vw 80vh 0 #333, 100vw 86.66667vh 0 #333, 100vw 93.33333vh 0 #333, 100vw 100vh 0 #333; }
+  .ui-score > .ui-aside {
+    background-color: black;
+    height: 100%;
+    position: absolute;
+    z-index: 3; }
 
 .ui-note {
   height: 6.66667vh;
   background: #7EF58D;
   border: 1px solid black;
   border-radius: 2px;
-  position: absolute;
-  transition: opacity 0.3s ease; }
+  position: absolute; }
   .ui-note.-temporary {
     opacity: 0.5; }
 
@@ -123,7 +126,14 @@ body, html {
   height: 6.66667vh;
   background-color: black;
   z-index: 2;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 1rem;
   pointer-events: none; }
+  .ui-header > * {
+    pointer-events: auto; }
 
 .ui-button {
   appearance: none;
@@ -132,13 +142,13 @@ body, html {
   border: none;
   pointer-events: auto;
   color: white;
-  font-size: 3rem;
-  text-transform: uppercase; }
+  font-size: 2rem;
+  text-transform: uppercase;
+  padding: 1rem; }
   .ui-button.-exit {
     width: 3rem;
     height: 3rem;
-    position: absolute;
-    right: 0; }
+    margin-left: 2rem; }
     .ui-button.-exit:before, .ui-button.-exit:after {
       content: '';
       width: 100%;
@@ -152,9 +162,23 @@ body, html {
       transform: rotate(45deg); }
     .ui-button.-exit:after {
       transform: rotate(-45deg); }
+  .ui-button.-icon {
+    width: 5rem;
+    height: 5rem; }
 
 #root {
   height: 100%; }
 
 .ui-app {
   height: 100%; }
+
+.input-range {
+  margin: 3rem 0; }
+
+.ui-aside {
+  width: calc(100vmax - 100vmin);
+  left: 100vmin;
+  height: 100%;
+  position: absolute;
+  padding: 1rem;
+  color: white; }

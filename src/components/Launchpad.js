@@ -15,13 +15,14 @@ class LaunchpadButton extends React.Component {
         }
     }
     render() {
-        const { onClick, style, score } = this.props;
+        const { onClick, style, score, selected } = this.props;
 
         return (
             <div
                 className={cn('ui-launchpad-button', {
                     '-active': score && score.playing,
                     '-score': score,
+                    '-selected': selected,
                 })}
                 style={style}
                 onClick={onClick}
@@ -32,7 +33,7 @@ class LaunchpadButton extends React.Component {
 
 class Launchpad extends React.Component {
     render() {
-        const { rows, onClick, scores } = this.props;
+        const { rows, onClick, scores, selected } = this.props;
 
         const width = 100 / rows;
 
@@ -41,6 +42,7 @@ class Launchpad extends React.Component {
             {Array(rows * rows).fill(null).map((_, i) =>
                 <LaunchpadButton
                     score={scores[i]}
+                    selected={selected === i}
                     key={i}
                     style={{
                         width: `${width}%`,
